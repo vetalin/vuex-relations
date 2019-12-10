@@ -26,6 +26,7 @@
   "homepage": "https://github.com/vetalin/vuex-relations#readme",
   "devDependencies": {
     "vuex": "^3.0.1",
-    "typescript": "^3.7.3"
+    "typescript": "^3.7.3",
+    "vue": "^2.6.10"
   }
 }
