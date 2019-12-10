@@ -2,7 +2,6 @@
   "name": "vuex-relations",
   "version": "1.0.0",
   "description": "Organize vuex-modules relationships for watching and subscribing modules by modules",
-  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "test": "test"
@@ -20,9 +19,12 @@
   ],
   "author": "vetalin <telegram: vetalin>",
   "license": "MIT",
+  "private": false,
   "bugs": {
     "url": "https://github.com/vetalin/vuex-relations/issues"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "homepage": "https://github.com/vetalin/vuex-relations#readme",
   "devDependencies": {
     "vuex": "^3.0.1",
