@@ -1,6 +1,7 @@
-import { addStoreRelations } from './vuexMiddleware'
+import { addStoreRelations } from './addStoreRelations'
 import { Store } from 'vuex'
+import { RootStateDefine } from './interfaces'
 
-export const addStoreRelationsInit = <RootState>(Vuex: Store<RootState>) => {
+export const addStoreRelationsInit = <RootState extends RootStateDefine>(Vuex: Store<RootState>) => {
   return addStoreRelations<RootState>(Vuex)
 }

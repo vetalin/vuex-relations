@@ -1,14 +1,18 @@
-import { ActionWatchFunction, AvailableRelations, IStoreMiddlewareVariables } from './interfaces'
 import { Store } from 'vuex'
+import { ActionWatchFunction, AvailableRelations, IStoreMiddlewareVariables } from 'src/interfaces'
+import { getInitDispatcher } from 'src/initDispatcher'
+import { getWatchers } from 'src/watchers'
 
-export const addStoreRelations = <RootState>(Vuex: Store<RootState>) => {
+export const getWatchRegister = <RootState>(Vuex: Store<RootState>) => {
+  const {dispatchInit, moduleDidMount} = getInitDispatcher<RootState>(Vuex)
+  const { getWatchToGetter, addWatcherToState, destroyWatcher } = getWatchers<RootState>(Vuex)
+
   const registerRelationWatcher = ({ moduleName, initDispatch, watchRelations, watchActions, requiredRelations }: IStoreMiddlewareVariables): void => {
     watchToRequiredRelations({ requiredRelations, moduleName, initDispatch })
     watchToTiedRelations({ moduleName, watchRelations, initDispatch })
     watchSubscribeActions({ moduleName, initDispatch, watchActions })
   }
 
-  const dispatchInit = ({ moduleName, initDispatch }: IStoreMiddlewareVariables) => Vuex.dispatch(`${moduleName}/${initDispatch}`, {})
   const watchToRequiredRelations = ({ requiredRelations, initDispatch, moduleName }: IStoreMiddlewareVariables) => {
     const requiredRelationsList = (() => {
       if (Array.isArray(requiredRelations)) return requiredRelations
@@ -37,17 +41,7 @@ export const addStoreRelations = <RootState>(Vuex: Store<RootState>) => {
     }
   }
 
-  const moduleDidMount = (moduleName: string) => (dispatchInit: Function) => {
-    Vuex.watch(
-      (state: any) => state[moduleName],
-      (newValue, oldValue) => {
-        if (!!newValue && !oldValue) dispatchInit()
-      },
-      {
-        immediate: true
-      }
-    )
-  }
+
 
   const watchToTiedRelations = ({ moduleName, watchRelations }: IStoreMiddlewareVariables): void => {
     if (!watchRelations) return
@@ -64,7 +58,7 @@ export const addStoreRelations = <RootState>(Vuex: Store<RootState>) => {
         }
       }, {
         immediate: true,
-        deep: true // TODO: спорное решение
+        deep: true
       })
       addWatcherToState(relationKey)(watcher)
       return watcher
@@ -96,41 +90,10 @@ export const addStoreRelations = <RootState>(Vuex: Store<RootState>) => {
     })
   }
 
-  const getWatchToGetter = (getterName: string) => {
-    return (state: RootState, getters: any) => getters[getterName]
-  }
-
-  const addWatcherToState = (name: string) => (destroy: Function) => {
-    Vuex.commit('vuexWatchers', {
-      ...Vuex.getters.vuexWatchers,
-      [name]: destroy
-    })
-  }
-  const destroyWatcher = (name: string) => (destroy: Function) => {
-    destroy()
-    Vuex.commit('vuexWatchers', {
-      ...Vuex.getters.vuexWatchers,
-      [name]: null
-    })
-  }
-  return ({ moduleName, requiredRelations, watchRelations, watchActions, initDispatch }: IStoreMiddlewareVariables): void => {
-    const relationHandlers = Vuex.getters.relationHandlers
-    const foundRelationHandler = relationHandlers.find((relation: IStoreMiddlewareVariables) => {
-      return relation.moduleName === moduleName
-    })
-    if (foundRelationHandler) return
-    Vuex.commit('relationHandlers', [...relationHandlers, {
-      moduleName,
-      requiredRelations,
-      watchRelations,
-      initDispatch
-    }])
-    registerRelationWatcher({
-      moduleName,
-      requiredRelations,
-      watchRelations,
-      watchActions,
-      initDispatch
-    })
+  return {
+    registerRelationWatcher,
+    watchSubscribeActions,
+    watchToTiedRelations,
+    watchToRequiredRelations
   }
 }

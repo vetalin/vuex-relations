@@ -29,3 +29,8 @@ export interface IStoreMiddlewareVariables {
   moduleName: string
   initDispatch: string
 }
+
+export type RootStateDefine = {
+  [key: string]: any,
+  relationHandlers: IStoreMiddlewareVariables[]
+}
