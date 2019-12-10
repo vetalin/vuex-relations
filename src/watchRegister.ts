@@ -29,8 +29,7 @@ export const getWatchRegister = <RootState>(Vuex: Store<RootState>) => {
           })
           if (allRequiredRelations.every((relationDone: boolean) => relationDone)) {
             initModule(() => dispatchInit({ moduleName, initDispatch }))
-            if (requiredRelationWatchers) { // TODO: проработать этот момент
-              // сейчас иногда requiredRelationWatchers является undefined
+            if (requiredRelationWatchers) {
               requiredRelationWatchers.map((destroyWatcher) => {
                 destroyWatcher()
               })

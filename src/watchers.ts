@@ -6,15 +6,15 @@ export const getWatchers = <RootState>(Vuex: Store<RootState>) => {
   }
 
   const addWatcherToState = (name: string) => (destroy: Function) => {
-    Vuex.commit('vuexWatchers', {
-      ...Vuex.getters.vuexWatchers,
+    Vuex.commit('relationHandlers/vuexWatchers', {
+      ...Vuex.getters['relationHandlers/vuexWatchers'],
       [name]: destroy
     })
   }
   const destroyWatcher = (name: string) => (destroy: Function) => {
     destroy()
-    Vuex.commit('vuexWatchers', {
-      ...Vuex.getters.vuexWatchers,
+    Vuex.commit('relationHandlers/vuexWatchers', {
+      ...Vuex.getters['relationHandlers/vuexWatchers'],
       [name]: null
     })
   }

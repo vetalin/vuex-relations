@@ -12,7 +12,7 @@ export interface IActionRelationDesc {
   beforeOrAfter?: 'before' | 'after' // default is 'after'
 }
 
-export type AvailableRelations = 'currentClubId'
+export type AvailableRelations = string
 
 export interface IStoreRelationships {
   [key: string]: IRelationDesc | undefined
@@ -31,6 +31,5 @@ export interface IStoreMiddlewareVariables {
 }
 
 export type RootStateDefine = {
-  [key: string]: any,
-  relationHandlers: IStoreMiddlewareVariables[]
+  [key: string]: any
 }
